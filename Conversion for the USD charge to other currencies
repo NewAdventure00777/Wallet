@@ -1,0 +1,37 @@
+I was trying to add a php code to convert the USD amount to a real time conversion of the amount paid.  I entered my code this way and it's giving me a lot of errors.  Any idea to make it work?
+
+<?php
+// Replace with your actual API key
+$apiKey = 'YOUR_API_KEY';
+
+// Function to get exchange rates from CurrencyLayer API
+function getExchangeRates($apiKey) {
+    $url = "https://api.currencylayer.com/live?access_key={$apiKey}";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return json_decode($response, true);
+}
+
+// Function to convert USD to another currency
+function convertCurrency($amount, $toCurrency, $exchangeRates) {
+    if (array_key_exists($toCurrency, $exchangeRates['quotes'])) {
+        return $amount * $exchangeRates['quotes'][$toCurrency];
+    } else {
+        return "Currency not supported.";
+    }
+}
+
+// Example usage
+$exchangeRates = getExchangeRates($apiKey);
+$amountInUSD = 100; // Amount in USD
+
+echo "Amount in PHP: " . convertCurrency($amountInUSD, 'PHP', $exchangeRates) . "\n";
+echo "Amount in MXN: " . convertCurrency($amountInUSD, 'MXN', $exchangeRates) . "\n";
+echo "Amount in EUR: " . convertCurrency($amountInUSD, 'EUR', $exchangeRates) . "\n";
+echo "Amount in GBP: " . convertCurrency($amountInUSD, 'GBP', $exchangeRates) . "\n";
+echo "Amount in ILS: " . convertCurrency($amountInUSD, 'ILS', $exchangeRates) . "\n";
+echo "Amount in SAR: " . convertCurrency($amountInUSD, 'SAR', $exchangeRates) . "\n";
+echo "Amount in JPY: " . convertCurrency($amountInUSD, 'JPY', $exchangeRates) . "\n";
+?>
